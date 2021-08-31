@@ -1,32 +1,40 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Jul  5 13:02:02 2021
 
-@author: styar
+@author: Stylianos Argyrou
+
+This file contains code from https://github.com/MikLang/Lowess_simulation/blob/master/Lowess_simulations.py
+
 """
 
 import pandas as pd               # Pandas handles dataframes
-import numpy as np
+import numpy as np                # Numeric Python for series
 import matplotlib.pyplot as plt   # Matplotlib for plotting
-import seaborn as sns             # Seaborn for beautiful plots
+import seaborn as sns             # Seaborn for plotting
 
-
+# Dataset for the monthly values
 data = pd.read_excel('../Crime/Borough Monthly 2018-20.xlsx')
 data2021 = pd.read_excel('../Crime/Borough Monthly Data 2021.xlsx')
+
+# Dataset for the daily values
+# data = pd.read_excel('../Crime/Borough Daily 2018-20.xlsx')
+# data2021 = pd.read_excel('../Crime/Borough Daily Data 2021.xlsx')
 
 df = pd.concat([data, data2021])
 data = df
 data = data.fillna(data.mean())
 
+#The two following lines are separately used for the Daily to Monthly data
 # data = data.rename(columns={'Date - Daily Data': 'date'})
 data = data.rename(columns={'Month-Year': 'date'})
+
+# Sort values for better visualisation of the graphs
 data = data.sort_values(by="date")
 data = data.groupby(by="date").sum()
-# data['days_from_start'] = (data.index - data.index[0]).days; data
 
-# df = data["days_from_start"].to_frame()
 df = data["TNO Offs"].to_frame()
 df["months"] = np.arange(df.shape[0])
+
 
 x = df['months'].values.reshape(-1, 1)
 y = df['TNO Offs'].values
@@ -35,7 +43,6 @@ np.random.seed(10)
 
 x_values = [item for sublist in x for item in sublist]
 y_values = y
-
 
 df = pd.DataFrame({"Xvalue" : x_values,
                     "Yvalue" : y_values
